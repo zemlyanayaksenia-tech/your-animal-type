@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Animal Type Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,700;6..96,800&family=Permanent+Marker&family=Caveat:wght@700&family=Inter+Tight:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE occasion: flirty, confident, grown-up; a late-night magazine quiz, not a kids' game
+   IDEA a deck of sleek origami animal masks, like the cards at a masquerade
+   PICTURE faceted animal portraits in jewel tones on near-black tiles; the quiz card glows beside them
+   COLOUR wine-black ground, cream ink, hot coral-red accent, blush support, one jewel tone per animal
+   TYPE Bodoni Moda (high-contrast, fashion) + Inter Tight
+   LAYOUT laptop: title and a tilted mask strip left, quiz right; phone: title, quiz, then results and deck */
+:root{color-scheme:dark;--bg:#120a0e;--s1:#1c1016;--s2:#26161e;--ink:#f7ede8;--muted:#bba7ae;--line:#3a2430;--hot:#d6202e;--hot2:#b3141f;--blush:#ffb7a8}
+*{box-sizing:border-box;min-width:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 'Inter Tight',system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-family:'Bodoni Moda',Didot,Georgia,serif;font-weight:700;line-height:1.02;letter-spacing:-.02em;margin:0;text-wrap:balance}
+h1{font-size:clamp(46px,7vw,92px);font-weight:800}
+h2{font-size:clamp(32px,4.2vw,52px)}
+h3{font-size:24px}
+p{margin:0}
+.wrap{max-width:1240px;margin:0 auto}
+.band{padding:clamp(32px,5vw,72px) max(5vw,16px)}
+nav{position:sticky;top:0;z-index:5;background:rgba(18,10,14,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px max(5vw,16px);flex-wrap:wrap}
+.logo{font:800 24px 'Inter Tight',sans-serif;letter-spacing:-.03em;text-decoration:none;color:var(--ink)}
+.logo img{display:block;height:44px;width:auto}
+.navlinks{display:flex;gap:22px;font-weight:600;font-size:15px}
+.navlinks a{text-decoration:none;color:var(--muted)}
+.navlinks a:hover{color:var(--ink)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:12px 26px;border-radius:999px;border:0;font:700 16px 'Inter Tight',sans-serif;text-decoration:none;cursor:pointer;white-space:nowrap}
+.btn.or{background:var(--hot);color:#fff}
+.btn.or:hover{background:var(--hot2)}
+button:focus-visible,a:focus-visible{outline:3px solid var(--blush);outline-offset:3px}
+.hero{background:radial-gradient(ellipse at 20% 0%,#3a1020 0,var(--bg) 55%)}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(24px,4vw,64px);align-items:center}
+.kick{font-weight:700;color:var(--blush);font-size:17px;margin-bottom:14px}
+.lede{font-size:18px;color:var(--muted);margin-top:20px;max-width:34em}
+.quiz{background:var(--s1);border-radius:24px;padding:clamp(20px,3vw,36px);border:1px solid var(--line);box-shadow:0 30px 60px -30px rgba(214,32,46,.4);min-height:520px;display:flex;flex-direction:column}
+.step{font-size:14px;font-weight:700;color:var(--blush)}
+.prog{height:4px;border-radius:99px;background:var(--s2);margin:10px 0 22px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--hot);border-radius:99px;transition:width .3s}
+.q{font-size:clamp(26px,2.8vw,34px);margin-bottom:20px}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.opt{text-align:left;min-height:56px;padding:12px 16px;border-radius:14px;border:1.5px solid var(--line);background:var(--s2);font:600 16px/1.35 'Inter Tight',sans-serif;color:var(--ink);cursor:pointer}
+.opt:hover{border-color:var(--hot);background:#33182a}
+.opt small{display:block;font-weight:400;color:var(--muted);font-size:14px}
+.qnav{display:flex;justify-content:space-between;align-items:center;margin-top:auto;padding-top:20px;gap:12px;flex-wrap:wrap}
+.back{background:none;border:0;font:600 15px 'Inter Tight',sans-serif;color:var(--muted);cursor:pointer;min-height:44px;padding:0 4px}
+.back:hover{color:var(--ink)}
+.pick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:8px 0 20px}
+.pick button{min-height:64px;border-radius:14px;border:1.5px solid var(--line);background:var(--s2);font:700 17px 'Inter Tight',sans-serif;color:var(--ink);cursor:pointer}
+.pick button[aria-pressed=true]{border-color:var(--hot);background:var(--hot);color:#fff}
+.lbl{font-weight:700;font-size:15px;color:var(--muted)}
+.mini{display:grid;grid-template-columns:120px minmax(0,1fr);gap:20px;align-items:center;margin-bottom:18px}
+.mini .art{border-radius:16px;overflow:hidden;aspect-ratio:3/4}
+.mini .art svg{display:block;width:100%;height:100%}
+.youare{font-size:15px;font-weight:700;color:var(--blush)}
+.mix{display:grid;gap:10px;margin:6px 0 4px}
+.mixh{font-size:14px;font-weight:700;color:var(--blush);margin-top:4px}
+.mix small{display:block;font-size:12px;font-weight:600;color:var(--muted)}
+.mix .main b i{background:var(--hot)}
+.mix div:not(.main) b i{background:#7a2a3e}
+.mixp{font-size:15px;color:var(--muted);margin-top:10px}
+.mix div{display:grid;grid-template-columns:7em minmax(0,1fr) 3em;gap:10px;align-items:center;font-size:15px;font-weight:600}
+.mix b{display:block;height:8px;border-radius:99px;background:var(--s2);overflow:hidden}
+.mix b i{display:block;height:100%;border-radius:99px;background:var(--hot)}
+.mix span:last-child{text-align:right;font-variant-numeric:tabular-nums}
+.res{background:var(--s1)}
+.rgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:clamp(24px,4vw,56px);align-items:start}
+.tcard{border-radius:24px;overflow:hidden;max-width:440px}
+.tcard .art{aspect-ratio:4/3}
+.tcard .art svg{display:block;width:100%;height:100%}
+.tcard .body{padding:22px}
+.tag{font-size:14px;font-weight:700;color:var(--blush)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.chips span{font-size:13px;font-weight:700;padding:5px 12px;border-radius:99px;border:1px solid rgba(255,255,255,.25)}
+.feat{display:grid;gap:18px}
+.feat h3{font-size:22px;margin-bottom:4px;color:var(--blush)}
+.feat p{max-width:62ch}
+.matches{margin-top:clamp(36px,5vw,64px)}
+.rgrid{align-items:center}
+.mlist summary{grid-template-columns:44px minmax(7em,12em) minmax(0,1fr) 3.5em}
+.mt .mcard{padding:18px;grid-template-columns:96px minmax(0,1fr);gap:18px}
+.mt .mcard b{font-size:30px}
+.mt .mcard .sc{font-size:20px}
+.mt .mcard em{font-size:15px;margin-bottom:8px}
+.mt .mcard b{margin-bottom:10px;line-height:1.05}
+.mt .mcard{padding:22px 24px;gap:24px}
+.mt{gap:18px;margin:22px 0 28px}
+.mt{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:18px 0 22px}
+.mcard{border-radius:18px;padding:12px;display:grid;grid-template-columns:56px minmax(0,1fr);gap:12px;align-items:center;border:1px solid var(--line)}
+.mcard .art{border-radius:12px;overflow:hidden;aspect-ratio:3/4}
+.mcard .art svg{display:block;width:100%;height:100%}
+.mcard em{font-style:normal;line-height:1.2;display:block;font-size:13px;font-weight:700;color:var(--blush)}
+.mcard b{display:block;font-family:'Bodoni Moda',serif;font-size:22px;line-height:1.1}
+.mcard .sc{font-weight:800;font-size:15px}.mcard .sc small{display:block;font-weight:600;font-size:12px;color:var(--muted)}
+.mlist{display:grid;gap:8px}
+details{border:1px solid var(--line);border-radius:14px;background:var(--bg)}
+details[open]{border-color:var(--hot)}
+summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:40px minmax(7em,9em) minmax(0,1fr) 3.2em;gap:14px;align-items:center;padding:10px 16px;min-height:56px}
+summary::-webkit-details-marker{display:none}
+summary .ic{border-radius:10px;overflow:hidden;aspect-ratio:1}
+summary .ic svg{display:block;width:100%;height:100%}
+summary .nm{font-weight:700}
+.bar{height:8px;border-radius:99px;background:var(--s2);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--blush),var(--hot))}
+summary .pc{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+details p{padding:0 16px 14px 70px;color:var(--muted);max-width:80ch}
+.deck{background:var(--bg)}
+.tabs{display:flex;gap:8px;margin:18px 0 24px;flex-wrap:wrap}
+.tabs button{min-height:44px;padding:0 22px;border-radius:99px;border:1.5px solid var(--line);background:transparent;font:700 15px 'Inter Tight',sans-serif;cursor:pointer;color:var(--ink)}
+.tabs button[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.card{border-radius:20px;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--line);transition:transform .25s;background:var(--s1)!important}
+.card:hover{transform:translateY(-4px) rotate(-1deg)}
+.card .art{aspect-ratio:4/5}
+.card .art svg{display:block;width:100%;height:100%}
+.card .body{padding:16px 18px 20px;display:grid;gap:6px}
+.card h3{font-size:26px}
+.card p{font-size:15px}
+.spot{margin-top:8px;border-top:1px solid rgba(255,255,255,.14);padding-top:10px;display:grid;gap:6px;font-size:14px;line-height:1.4}
+.spot .sh{font-weight:800;color:var(--blush);font-size:13px}
+.spot div:not(.sh){display:grid;grid-template-columns:5.6em minmax(0,1fr);gap:8px}
+.spot span{color:var(--muted)}
+.spot b{font-weight:600}
+.feat .spot{font-size:16px;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin:0}
+.feat .spot .sh{font-family:'Bodoni Moda',serif;font-size:22px;color:var(--blush)}
+.map{background:var(--s1)}
+.scroll{overflow-x:auto}
+table{border-collapse:separate;border-spacing:4px;margin-top:20px;min-width:720px;width:100%}
+th{font-size:13px;font-weight:700;color:var(--muted);padding:4px}
+th .ic{width:40px;height:40px;border-radius:10px;overflow:hidden;margin:0 auto 4px}
+th .ic svg{display:block;width:100%;height:100%}
+th.rh{text-align:left;white-space:nowrap}
+th.rh div{display:flex;align-items:center;gap:8px}
+th.rh .ic{margin:0;flex:none}
+td{height:48px;border-radius:10px;text-align:center;font-weight:800;font-size:14px;font-variant-numeric:tabular-nums}
+td.me{outline:3px solid var(--ink);outline-offset:-3px}
+.key{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;font-size:14px;color:var(--muted)}
+.key span{display:inline-flex;align-items:center;gap:6px}
+.key i{width:16px;height:16px;border-radius:4px;display:inline-block}
+.cta{background:var(--hot);color:#fff;text-align:center}
+.cta h2{max-width:18ch;margin:0 auto 14px;font-size:clamp(36px,5vw,64px)}
+.cta p{max-width:46ch;margin:0 auto 26px;font-size:18px}
+.cta .btn{background:var(--bg);color:#fff}
+.cta .btn:hover{background:#000}
+footer{background:#0b0609;color:var(--muted);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+footer a{color:var(--ink)}
+.art img,.art svg,.ic svg,.herds .cut svg{display:block;width:100%;height:100%}
+.herds .cut svg{aspect-ratio:3/4;height:auto}
+.tcard .art img{object-position:50% 40%}
+.art.nat,.card .art.nat{aspect-ratio:auto}
+.art.nat img{height:auto}
+.ic img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 40%}
+/* collage layer: paper cut-outs, tape, marker notes */
+.paper{background:#f4ede2;color:#1d1216;position:relative}
+.tape{position:absolute;top:2px;left:50%;width:84px;height:24px;background:rgba(236,220,180,.78);transform:translateX(-50%) rotate(-4deg);box-shadow:0 1px 2px rgba(0,0,0,.25);z-index:3}
+.tape.r{transform:translateX(-50%) rotate(5deg)}
+.mk{position:absolute;z-index:3;background:#fff;color:var(--hot);font:22px/1.1 'Permanent Marker',cursive;padding:4px 10px 6px;box-shadow:3px 3px 0 rgba(0,0,0,.4);white-space:nowrap}
+.hand{font-family:Caveat,cursive;font-weight:700}
+.ransom{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:16px}
+.ransom span{display:inline-block;padding:2px 8px;font-size:18px;line-height:1.2;box-shadow:2px 2px 0 rgba(0,0,0,.4)}
+.ransom span:nth-child(1){background:#fff;color:#111;font-family:'Bodoni Moda',serif;font-weight:800;transform:rotate(-3deg)}
+.ransom span:nth-child(2){background:var(--hot);color:#fff;font-family:'Permanent Marker',cursive;transform:rotate(2deg)}
+.ransom span:nth-child(3){background:#111;color:#f4ede2;font-family:'Inter Tight',sans-serif;font-weight:800;transform:rotate(-1deg)}
+.ransom span:nth-child(4){background:#f4ede2;color:var(--hot);font-family:'Bodoni Moda',serif;font-style:italic;font-weight:700;transform:rotate(3deg)}
+.herds{position:relative;height:clamp(210px,22vw,270px);margin-top:30px;max-width:560px}
+.herds .cut{position:absolute;top:0;width:21.5%;padding:8px 8px 26px;box-shadow:0 14px 30px -12px #000}
+.herds .cut img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;object-position:50% 45%}
+.herds .cut .hand{position:absolute;left:0;right:0;bottom:2px;text-align:center;font-size:20px;color:#1d1216}
+.herds svg.doodle{position:absolute;pointer-events:none;overflow:visible}
+.card{background:#f4ede2!important;color:#1d1216;border:0!important;border-radius:0!important;overflow:visible!important;padding-top:14px}
+.cards .card:nth-child(odd){transform:rotate(-1.1deg)}
+.cards .card:nth-child(even){transform:rotate(.9deg) translateY(6px)}
+.cards .card:hover{transform:rotate(0) scale(1.02)}
+.card .art{position:relative;margin:0 12px}
+.card .art .mk{right:-14px;bottom:14px;transform:rotate(-7deg);font-size:20px}
+.card .tag{color:var(--hot)}
+.card p{color:#2a1c21}
+.card .spot{border-top-color:rgba(0,0,0,.15)}
+.card .spot span{color:#7a6870}
+.card .spot .sh{color:var(--hot)}
+.tcard{background:#f4ede2;color:#1d1216;border-radius:0;overflow:visible;padding:14px 14px 0;transform:rotate(-1.5deg);box-shadow:0 30px 60px -30px #000}
+.tcard .art{position:relative}
+.tcard .art .mk{left:-18px;top:20px;transform:rotate(-8deg);font-size:26px}
+.tcard .body{background:transparent!important;padding:18px 6px 24px}
+.tcard .tag{color:var(--hot)}
+.tcard .chips span{border-color:rgba(0,0,0,.25)}
+.mcard .art{border-radius:0;padding:3px;background:#f4ede2;transform:rotate(-3deg)}
+.mini .art{border-radius:0;padding:5px;background:#f4ede2;transform:rotate(-3deg)}
+.sl .e{fill:none;stroke:#f0dccf;stroke-width:3;stroke-linecap:round}.sl .e2{fill:#f0dccf}.sl .a{fill:none;stroke:#5a1626;stroke-width:6;stroke-linecap:round}
+.pz{display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:radial-gradient(circle at 50% 45%,#fbf4ec 0,#ecd9ca 80%)}
+.art .pz img,.ic .pz img,.herds .pz img,.pz img{display:block;max-width:86%;max-height:86%;width:auto!important;height:auto!important;object-fit:contain;filter:drop-shadow(0 6px 8px rgba(60,20,20,.18))}
+.herds .cut .pz{aspect-ratio:3/4}
+.ticker{margin-top:clamp(28px,4vw,48px);position:relative}
+.ticker .th{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap;margin:0 auto 14px;max-width:1240px}
+.ticker .th b{font:700 22px 'Bodoni Moda',serif}
+.ticker .th small{color:var(--muted);font-size:13px}
+.trk{overflow:hidden;-webkit-mask:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.row{display:flex;gap:14px;width:max-content;animation:run 60s linear infinite}
+.trk:hover .row{animation-play-state:paused}
+@keyframes run{to{transform:translateX(-50%)}}
+.pf{width:210px;flex:none;background:var(--s1);border:1px solid var(--line);border-radius:18px;overflow:hidden;text-decoration:none;color:var(--ink);display:block}
+.pf .av{position:relative;aspect-ratio:1;background:linear-gradient(160deg,#3a1a26,#1c1016)}
+.pf .av svg,.pf .av>img{display:block;width:100%;height:100%;object-fit:cover}
+.pf .badge{position:absolute;right:10px;bottom:10px;width:54px;height:54px;border-radius:50%;overflow:hidden;border:2px solid #f4ede2}
+.pf .badge .pz img{max-width:80%;max-height:80%}
+.pf .on{position:absolute;left:10px;top:10px;background:rgba(18,10,14,.7);font-size:12px;font-weight:700;padding:3px 9px;border-radius:99px}
+.pf .on i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#3ccf6e;margin-right:5px}
+.pf .bd{padding:12px 14px 14px}
+.pf .nm2{font-weight:800;font-size:17px}
+.pf .mt2{color:var(--muted);font-size:14px}
+.pf .ty{display:inline-block;margin-top:8px;font-size:13px;font-weight:700;color:var(--blush)}
+@media(prefers-reduced-motion:reduce){.row{animation:none}.trk{overflow-x:auto}}
+.again{display:flex;justify-content:center;margin-top:clamp(24px,3vw,40px)}
+.again .btn{min-height:56px;padding:14px 32px;font-size:17px}
+#quiz{scroll-margin-top:90px}
+.dt{padding:0 16px 18px 70px;display:grid;gap:14px}
+.dt>p{padding:0;color:var(--ink)}
+.sub{display:grid;gap:6px;max-width:520px}
+.sub div{display:grid;grid-template-columns:9.5em minmax(0,1fr) 3em;gap:10px;align-items:center;font-size:14px;color:var(--muted)}
+.sub em{font-style:normal;font-weight:800;color:var(--ink);text-align:right}
+.cw{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.cw div{background:var(--s1);border-radius:12px;padding:12px 14px}
+.cw h4{margin:0 0 4px;font-size:14px;color:var(--blush)}
+.cw p{padding:0;font-size:15px;color:var(--ink)}
+.dd{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;font-size:15px;color:var(--muted)}
+.dd b{color:var(--ink)}
+@media(max-width:600px){.dt{padding-left:16px}.cw{grid-template-columns:minmax(0,1fr)}.sub div{grid-template-columns:7.5em minmax(0,1fr) 3em}}
+.yn{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.yn>div{border-radius:14px;padding:14px 16px;border:1px solid var(--line)}
+.yn .y{background:rgba(60,207,110,.07);border-color:rgba(60,207,110,.35)}
+.yn .n{background:rgba(214,32,46,.08);border-color:rgba(214,32,46,.45)}
+.yn h4{margin:0 0 8px;font:700 20px 'Bodoni Moda',serif}
+.yn .y h4{color:#8fe3a8}.yn .n h4{color:#ff8a8a}
+.who{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+.who>span{display:inline-flex;align-items:center;gap:8px;font-weight:700}
+.who .ic{width:40px;height:40px;border-radius:10px;overflow:hidden;display:block}
+.yn p{font-size:15px}
+@media(max-width:600px){.yn{grid-template-columns:minmax(0,1fr)}}
+.msh{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+.ms h4{margin:0;font-size:14px;color:var(--blush)}
+.mnav{display:flex;gap:6px}
+.mb{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:var(--s1);color:var(--ink);font-size:24px;line-height:1;cursor:pointer}
+.mb:hover{border-color:var(--hot);background:var(--hot)}
+.mtr{overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;scroll-behavior:smooth}
+.mtr::-webkit-scrollbar{display:none}
+.mrow{display:flex;gap:10px;width:max-content}
+.mp{scroll-snap-align:start;flex:none;display:flex;align-items:center;gap:10px;background:var(--s1);border:1px solid var(--line);border-radius:12px;padding:6px 14px 6px 6px;text-decoration:none;color:var(--ink)}
+.mp:hover{border-color:var(--hot)}
+.mp img{width:52px;height:52px;border-radius:9px;object-fit:cover}
+.mp b{display:block;font-size:15px;white-space:nowrap}
+.mp small{color:var(--muted);font-size:13px;white-space:nowrap}
+.mp small i{display:inline-block;width:7px;height:7px;border-radius:50%;background:#3ccf6e;margin-right:6px}
+body.done .again,body.done .ticker{display:none}
+.tips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.tips div{border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.tips h4{margin:0 0 4px;font-size:14px;color:var(--blush)}
+.tips p{padding:0;font-size:15px;color:var(--ink)}
+.dd{justify-content:center;margin-top:18px}
+.card .talk{font-size:14px;color:#2a1c21}.card .talk b{color:var(--hot)}
+@media(max-width:700px){.tips{grid-template-columns:minmax(0,1fr)}}
+.hide{display:none!important}
+@media(max-width:900px){
+.hero .wrap,.rgrid{grid-template-columns:minmax(0,1fr)}
+.cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+.mt{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:600px){
+.navlinks{display:none}
+.herds{display:none}
+.opts,.pick{grid-template-columns:minmax(0,1fr)}
+.quiz{min-height:0}
+.mini{grid-template-columns:88px minmax(0,1fr)}
+summary{grid-template-columns:36px minmax(0,1fr) 3em;row-gap:6px}
+summary .bar{grid-column:2/4}
+details p{padding-left:16px}
+.cards{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.card .body{padding:12px}
+.card h3{font-size:21px}
+.spot div:not(.sh){grid-template-columns:minmax(0,1fr);gap:0}
+}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.prog i,.card{transition:none}}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <a class="logo" href="https://www.dating.com/"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJ0AAABgCAYAAAAHKnARAAAYJklEQVR42u1deZRdRZn/fVX3dbo73WE1JNDZwEAgGxCWIDIBhXEQUXHs6KhzFGdUxuV4XBDFcQjMGXdnxh314DqMTvocQIMyigyJAUEMmKSzCYGQDkkIZE96e+/d+s0f96tO5ea+7k5I2n79bp30eXl3qeWrX3171QPyckghIESrPZx3ls2ZUyBgCYjWYXNKZhfJSXBwWQjY+UDsv6+bNGOag7xKILMpmEDyOAh6BbLHUDpicIUlHpzWsXJDArZWC7RRACbYy0sOun5osRAw84F42fg5jY2F4tuNyNud4KLRxjQYCBwIBkSzEMQgOp3bZQRLy+Qd059tXyQACRgBXE7WHHQVxalJgIKVE2dcU2fMbXVizrcCdDsHB8QEIQeRywNQYCG23hiU6FB2+DVjd+PZz7W3PzhvXnT5kiWx5BwvB10acMqZZM2k2bcWhJ+KxETddE4vGxmATkz+OUBMszHS5dzOkuATMzesvMPXn0MtB10f4ABg9TnnFEyXvb3JRNd3upgOoADmCOqjgLEVExUg6Izjm2Z2tH+RgJVAT6z1Ymp58G2J3kXpiv5jjImu3+/KZZesRHOEK1gAicqkK9LFjdZ8oX3yzA8LEC9Ua5a5dKldAngrddXkWR9qFvu1LsZll3Cko0ITBzCCQMAeSPSaszY8sTQ3LmqY092iVuq6STOmWeDWXji6BBByFAkrMZyrE9NQduVvLD9l1ugFCaczOehQm7AjIA7m1gYxJ5RIJ8eAFgKxXYzjZmtn1TfynbcCbvG8eTUPOqlZsTpl9kUR+QiPMfch4BrESDddeyHquujM9euLai3nnK5WSqvXqeg+0mCsccd4/gUwPXQwwPRS3HAREt9KTXM7U2tcTgCumTLrTAt5XbeL1S98rF0zdKONsQK8Xq1myUFXM1yuVVHg3tJoTJMDnAwBACSxZkEnFx7EbXPQjXz9VdAWd7TMbQDk78qJVJWhcUKLxEl7437fMrfBR0By0GHERx8MAOyx3RdHMNN6SA7h+MUBEOFxTYX9Y3KXSS2ZEAAE7poGYyTR54cU9ABh64tSyEFXQ6KVaLUicmkZHFLZJgBNotd12VF1+3LQ1VBgf9WENZMBzCg6Bw6B1RpyOQOBQF48/ZnH99V6poWpkcC+AEBkzMWjRJrLSRbJEM47aQU0wGoB3C0J3WvWPxyhplKZ5KI6Mehl2QFih1K6lwmJwcUAsADzzAIsAdAqi/GCXI6xBIDFeEEA4EWM5Wq08dYR6lqJaikKQeBcN8T6HAEWREwP3U7D0q+JVitoK/fx4AHUgja0mvlocyOJM0a1khm8bvyck2OUppVIMMkGHqoeuIIYGzt379kd67YC6/D7lrkNJ9Ttn86ynQtxU52gSSBGwG5Angexqkj8STpWbgDaYuDQDUN5wH+Y++cEcGsnzpwjRh5zgOEQ6XQEWCciRXLHKINzuspsikRugOBaAFObjLUmMDZEP3voUCJ3GsjiMtyPZjzbvggHNvtU/S6zGgBdqxW0xWsmzb5utJW7Ol0cD6E+xzpIsUjeLiLdBnxvg7EnlujQS4LgIZt2EktbjIVIgzEo0iEmH3TiPnfOhlX3h9w7t16HO/jopssQsggCjESkB24HhFeNMeaTEDlxvyuXe0gHgAKxgEThn0CsABKD3O/KcZFkvbFXRDT3rZ00c4H3+1VzGG3E63TeIoSViTKE8ySAlElYyKkFkVN3u3Kc7CyTSAa/38ICQKcrxwZi6429Ze2kWWd0Fgvvw9bHu6uV4414Tnc5lsQAIMTp7i8wPwTQS9JzsCPNQHYAexiXj7P2HfV1xe8At0gbWk01sjtbC5brsvFzGiPrbjSCk8t9XGRIFWc5OnWI9NDFzTY6d/OY1aUr9jy4ZCFg26qM20ktgO7ZiXPGd0pxXSRmTBmkVPG4CdACFEHRibvs7GdWLau2XWamFvaAdEWlk4zI6HiIHcPHimvGAOvF1MdObq5GxmFGdsy1VTSZ7bSCiCUOOv+mmoFnupxzdZBr21vOvUAAt7CKVKXacJmIaTZ9x8aNjBE5kI3GRmLj+UCQip+DbpgUx2YZgSmCvXQwgis3j5/TmOQLVgcXNyM/Vxhw4sbYhNFxBCmrUkyGM2OvxRnVZBiamnAMxzghSaIcUTls4gA3SmzkouLpusxy0A2bQVrUjWTznI5NufWK4RZ3lWiE7wBxOegwXEJgY704rePIPBtOkuxAlIGBUkKRB/wxNHsj/FawaISKVimRcM5tSQynNuacbvgIWONTgkZQiI82iX3tjFi3Idxem4NuWOh0I2+cArg6GBJcGzf3bq8m1aHmD+irXk5HRCICoG3GmjVFJGlOOafLy7Hce2Fkr4u32N66O1WDzbNM8nJsz7trFGMAfnva1se3+3P3kFuveTlGgItHG2v3xvHjTcQ3q/HE9pzTVRmHqxNje53bXbLuhkkd7btQhVsSc9BVEYcriDFCFIuO752VZAzbfGPO8C29UsVGA4G4SawluaOL8VtmdbS3VfNPP5kRf14TAEBYnWBjXBCRJmNtN9zviohfPWvjqntUj4vzzdYYvgdbU6pDBGk6fUwgLohIs7HWES90Mf74ztLOv5n57OoVaqm6/ACd4R+RKA1voCVH0VqIHSXGWgG6nNvcRfezknVfnfn06k3BuSxxfmoTqiCJc5iAjn2WJpkcDSG2ICKjxOhO/rir27lHIPwfx3jRjI1rngeAhWi1STB/ZBzKXhOczgpLQwAmBOeM4ACwIAIBARNBpCAikSTHwfbQoei4LYZbEUN+U0d735kdy9ekToSn6HFhIyUza0SD7kUsSX4sQkyXA2MCcXJKGA46hBpHlMcmvh6R5A8GAisQC4EV6Tv6y4EokSg6t6cMbBIn6yCyTMDlDuUVnqMhOGlqAdoo+Umc1WpItCEGe5pMZB1gbYpbyOEey68gcsreSiBiOkcijoHeMrgdlO1GuImUDhFuJvEcRZ5xJbdFjue26WvWFA89HqzVQIF2gLMhP3O42soCTWqkLf9qW1l642Q7YsGIiwRindAaoC6GWAOQpE1OxBQ6OIpI2SU/HkaSTsSUHeMyYHea5NTMXlrptWXZ64jdvZBdx9sTdkzeuKRYkUttScTmYswzSWZzm0u4bVv+c+vVZZ3SkLT6J8Plh4yJVnvgDya5lv+culQ52JJjI+Rg5y9JAxFK3w/VQBZjngWSfRN9Vi0q7qk42PoN7oWnoR/Yk9CG1lQMVGr4yP6aOLWpe9OmK7i/6xKpr99ZX7C/lJaWTSQlDca8VL9IE/+X5jxD0I7Rz1EkbycZ80DZRPLqY9WfvAxTcTcEYC/o/9+jQIsZxyWSxQB4p+TAw8iKvZKsJzmO5Gkk67J0q6MEshNITiB5UtCGt/TeoL/f62BMBKCg91oAXJCnb40Q0JH056BdD2A5gCcAvCoUe0eRo9UD+CGAZQDuIjlaORf1s74f3bSQT+/I4XR+gk8GcAqAsQCaj6ZhkjICztA2JgCwej3Sz7tx4MfdygBKeo7yNgCPwfty8zJiUpt6g1TpnmPUvzKALm1jf9BOrJzu+wq8SP8KAPYA+IiIbCFpcgsWIyoiYQPOxmN4+nshaOeg9kSkm+R8ANcCeCWA7QAWicgq5ZY5l8vDYEf+S+TKleXAQUVCBVZZud3doUslB1yVgU5FV/iHvoSJw/wNCjUu0vUwBEVggNCLw+A9Bu1Zfz2JhYo3KMJxxL7uYBwIrg3Yn0G4hTJpE/T9kHYPo26TwdXd4agJlcYY0refcfXNQ4V6XGYE6FB9viJNo6wO68PsJ84pAxkNHkj9Ed23lX5GB5X8ICD7cuEIoLfCs6XsY9vkoNAUSSsi8eGE1NKWu77PAcZz2NsCA7rH/dCTA/TPDLSAKkmBDFpVlBbhvQGey6RplGE1OvW7XQzgPAAv0848DeB+EdmizxYrGSSpTp0F4HIAE7WerQAeFZHHta1GAJMANADYIiLP67Wp2r9GrbYRwIUk9wCoA/BC0JeXAxitRkSH1itq8Z6oRsgzIhKTnAHgMgDjlXs+B+AhEWnPsJwP4kD6fh2AC5U+p6ixswrAb0Rkhz57nI4JAJ4Ska5BxI8dyRO07pna724A6wA8IiKb+5vkFM1nqY47TpnDbnU7PaRjCJ8V5WonAThdjbVnRWQfyakAXoPE79mr43xARHb6Baj9PgPAlQAmKwN4GsAfRWRNxT6nQkxXk3w08O6HZTPJW0kWSH4suH6d5wRBiOoMkt8juTujnv0kF5GcTfJkks+SLJP8ur57jr7Xo9epoa5OfbeX5A+DPv9W+7tWJ85f/6y+/xzJS0h+meTejP7sI/l1BTsqhfZIvpnksqBPYVlP8mZ97kPa906Sl6T8m4fQXR3tN5F8htllm/bv1Kwoi6+b5FyS9yiN0sWR/B3Jq1Jt22BsRf17B8mPk9yRUc9TJK8PfKmfIbmzwhx/h2RzOoyJACwSTFJY9mRM1H+R/Pfg+5u0Hh+euoLkltQ7vRkA3ELybSQ36vcf6vvncuBybzDwR/TaCz78pfe+pNc7Sa4M3u3UNvel6ryLZORVCP00usj+LfVsWcHwQur6N0l+Pvh+aRbogkk/keQvM+reqTQLSzvJman4s/98VwbYtuo4wzktKePw44v0/TcG4GwPnt9LsoNkV6rud5L8QvC9R5nSrtRzP1X6HQBe0OnPBByFJNtIXkdyBslpJP+e5NLUxMUhp9N6zkshv53kP2k9Zyon/V4A5N0KbBeA7mUkb9ZFsFmfe1En/p+VaNcGoHtI399KcmzQl8/rdc+1d+o4zyE5nuQskjdq3X5iPpLBtb8RjKdLkwxeQbKF5ESSbyW5JHhml7brSL4yDboAzI0kfxO896KOea5KivNIfjTFAdcFHM8v8tYUsO4meZWGKMeRvJTkt1NguDlVx7Xa31Iwv7epNBpPcibJr+l9l2rvRyQvUHpMJfkPOm8eH/94yMLTwXVpRTHJGyvoHwWSXwkai1PitZ7k/wX3F5I8sUJdVweczw/0Bxki7Q96b2U/4ul3wcoOQfc5vV7U8V1ToS/X6jNOOWJ9UPeVOs6yTsSbK9RRF3BWzzFI8rIM0HmR9sng2adJXlCh7tNIPhDU/eMgaXWigtWX2/rRHz+oHMkpPS4M7l0XzIUjeUOFOr6TmrN7Kjz31wFNHz0kW4jknUGnPxukDdlgVUbBRNyZatiDbn5AxD94wClYTZDh61fXW3QySynxWtD2GlWHIsk1+j0K6hss6Ejye8G4QvE5Sq/fG4iJWXotSk32h4L+2ZT49f+/OxCRTHO6oM+nqtiKVcyfl6KVTdGqRSdvM8nHVXlHCujfT2VS+4m2PimD5KeC5/87oNWbguvLgjrCMYpKrB7td7dfKEorm3rvUa1vO8lJfZKV5CSSzytQ1pMc4xvJCMB7wp2posqv5jfo9bv0WhyIv6hCMN/rEveFKzh8R7mHB93qACBymJyOqrOYdH+0DVFFvu/ZwKDp1GuPKWCjrHSpoM+zVbdyFUDnP98dtPfVUNSlXFOhCtRA8niSxykIjlfjyamKckY4Txk09yLdv7OdZEtgSKQZjw1zGvX/TbpYSPJPWp+k8OE/7wj0+Tl+LAbAbA3ei4aQ9iYWvJTSfpzA3H4SwMOBr84p0WfotQ4AS7WjcSWfkN5fmBF9CJMLzEvIdA7r66ngfyxrf/YG1xr0c07gsrlXRHr78eX5ca4EsDojdJcurwictr9QWriARn1OWO8CEpFuEdktInt0floATNE2HhaRp/X5SjQXdd/cp++cpHOWdp/tyng3pKmvf7d3B3l8pMbcG7jUCqF/7awguvD0IBy/HvVrg2sl9QmN0+/rAewdwIvuHZ3r1NeVBbqhOHtNMlKhfJtTgmtP+rSqSo7oIMHgz/0sFP/+RL23H8CT+p6r/PskSfQllBIATgUwKtU/M4iox4bg0uQM2kcD0Mu8lIQRo51mAJ7BBvDjVDZIOUVgOYxsldIQHEnvDiPjJqsf0SBCUX5B9vYDHt+P+hTNB6RZRvv1qYU/2DrKGeMuHUFMXg7jPsMGtwY3J3s2PAgONTHVyR0aEQCA0zRCMJgJmhiIsyyuEMb9pEL6+WDAysNYRL6NbcG1lkGkvnvaTMgAQzrO3KGfYwCMG6huz+VSmdM7gnG1eG6Z6Yw9mAZh/zZlLLr4KC1kyUjWEAPgD4E+cw3J0YG+lRnb05DJFcEgmlTHWK3XpgKY7husQAAvit7Yz8pxwcDK/cQej9WvOq8IQHNlKqCfGWQnOQHARRmcxOgznh5/ChbsVT45tb+kVhWxDQAaVVlfpaKSAF4VOMalH/eSAXC1Xu4CsDFjUfJY7jo0qps9rN9nArheFUIbuBbEE1WJ8y8auyynCLtIG4gAfDoATiGsh2RBREokrwAwP8Xu4UGv/fDn6o4H4NPVbSpB82jn9XmgLwfQrvXOI/la7VNUgTYxgJsAnBBwC5/4UFLjwBsu92ps1QG4geRZIlJMRUSEZKRgO5nkXQCWAngAwDQR2QPgfh3/WADvV/EdeakQcD2r994JYJb27aFAN7dDtTXVKKH+M2Crt5K8Wonj/ArT/8ckPwbgAzoRJjXZdwJYE3DNr+hkFFP1lNS/810VrexHx1oTEPUGraMcBPXD9uUo7ev1VmMPgC8GyvN3Sc4NAMTA0oxJvhfA+5SOB/VNHbxT1JnbLCJ/BvADrXcCgJ+QbMmge1mlzzcBXKcW9V4A63X831ZjxAG4keQNSu+wDl/PFQC+EPTry4GXwg3pkQwpT3OsIaovkbyQ5CkkT9KA+Y9TMTkfkXhzUN+V6jzsi5GSfI06N8eq7+vTQcyyJ4gZ/iAjBHW+es9j9ffcoWGfaUGbSwfhp7uqQgzUBkF6X1pTvrefBvd2arLDFPWVNZC8WENBcUBD76ebq5xrlY5zD8m3ar1jSa5IhQw/oH7QU0ieTvJvST6Yiqeeler7TYFT3ulcnqvB9maSLyf5r0F4jsoQEDiNQ+fwpzOiKKGfzsfKF1dIQPB0uz3o19y+OgOR10DyZ6n4XKeGZ9ar99mXBzQu58Nmr08NYH7gVPWNPq8ZCrtSwP2wthEHEQmbWhC3ZQT8F6VAF2sCwdhUlokHwECg+6A+G/tFpKJulDph78oIpj9KcnkqceDnGv7z5RKl78bg2ruD9k9XJ2s66+Updd6mEyRemY7y6PcFGVke6xTI6Xq+FUQ8oiAM5sc/EOg26HMPDgJ0vs4+0Hm9iCLSDeDtAD6h+VA+h+10JDuy6lUH+QmAVrWcbMrxV1Z9bSGA1wL4bWCBngLg5QCO12f/COB1AO5R0Wk0Ty4Ul96guQ3AR1P+pcYM31GUsQ0xnYFcSeSO0mdN4IqgZiLvVt3zM4FFO05z6mYDaFIR9y0A70o5VyXD3+hz2epE5BnNWftW8F6T0uok/V4E8As1OB5SMJR9var/LgDwVqUr1Htwljp/fT1PqYryflWrQmd5OH4ZQPVo8u62AbadMqjTBef5HZrlqVkMr1b9wTt8VwG4T0Qe1+enquHRowmCL6r+5nzSnnK+y9TSnaiE2KKGy891Y02zJi6+DMCfRWR5fxuvg2efEpHHtN9z1FHaBWCpjxyQnA7gbJ20hzXJ8qDs4SCJcaICiACWi8hzwQo2Pk1bw0ZXAjhf29yneuf/BomgdwJ4mxJ6ngLlsiAh9jER2ewd8UFC5RlKqzlItnV2q6K/WESeGEwSp1q3l2ofx2nftyHZn3y/iGxPzbV/71Rttx7AChF5skJCq9G6R+mc/zEdAQloOk29GN1K/z1ZeXWZcbsK6eqZfqQMf9RgNm4PZuN19FLqGMj/Nchno4HGoxkqK4Lky8mD7IMZrP79UuiZoV6Yv+jGHO94TIVTXLA5g6lNL54Vx+kVkbERJi3evMUXtsVK+fuqF4SbVvxOMKeBcq8mxBU2umRubvGrnclJwQf1Q08YmKJif7eIbFTu7QJr37uIrHLuOQCmaX/WAtiYohXS9Api0RVVAZ8aPkC04RB6ZtG8nzNo+qVVBnAH3I8RbFDKD30czEFA6htbr3lhm0ieH3A0m6GMRyQXBwr7e0IDKy95GZQYSqVkryN5eYXnT9U0/tD9MWawohP5oYh5CUROI4BfAfgr/d6t359AErduUA//NZpqBAA7AbxRRJbmG7/zcqTcbmJqL0N/5ZnAJ5hzuLwc+QmgapW+Rzfg7FHHuI8AdGo27ldInpYDLhevR+Vk0SDDpIAki6ZJ6WcBdCLZzL0vP0tl4PL/HajULwjt4KAAAAAASUVORK5CYII=" alt="Dating.com" width="73" height="44"></a>
+  <div class="navlinks"><a href="#test">Take the test</a><a href="#types">All types</a><a href="#map">Compatibility map</a></div>
+  <a class="btn or" id="navcta" href="https://www.dating.com/?utm_source=animaltype&utm_medium=landing&utm_campaign=animal_type_test">Join free</a>
+</div></nav>
+
+<header class="hero band" id="test"><div class="wrap">
+  <div>
+    <div class="ransom" aria-label="The animal type test"><span>The</span><span>animal</span><span>type</span><span>test</span></div>
+    <h1>Find your wild side</h1>
+    <p class="lede">In Korea, everyone knows their “animal face”: the sly fox, the dangerous wolf, the gentle deer. Eight quick questions about your looks and the way you love will reveal yours, and the animal you should be chasing.</p>
+    <div class="herds" id="herds"></div>
+  </div>
+  <div class="quiz" id="quiz" aria-live="polite"></div>
+</div>
+  <div class="ticker" aria-label="Men on Dating.com">
+    <div class="th"><b>Men on Dating.com right now</b></div>
+    <div class="trk"><div class="row" id="row"></div></div>
+    <div class="again"><a class="btn or" href="#quiz">Before finding your type, discover your own</a></div>
+  </div>
+</header>
+
+<section class="res band hide" id="result"><div class="wrap">
+  <div class="rgrid">
+    <div class="tcard" id="rcard"></div>
+    <div>
+      <div class="feat" id="rfeat"></div>
+    </div>
+  </div>
+  <div class="matches">
+    <h2 id="mh"></h2>
+    <div class="mt" id="mtop"></div>
+    <div class="mlist" id="mlist"></div>
+  </div>
+</div></section>
+
+<section class="deck band" id="types"><div class="wrap">
+  <h2>Meet the whole pack</h2>
+  <p class="lede">Each type combines a face, a build and a personality. Most people are a mix, and your test result shows your top three.</p>
+  <div class="tabs" role="group" aria-label="Show types for">
+    <button type="button" id="tm" aria-pressed="false">Men</button>
+    <button type="button" id="tw" aria-pressed="true">Women</button>
+  </div>
+  <div class="cards" id="cards"></div>
+  <div class="again"><a class="btn or" href="#quiz">Which one are you? Start the test</a></div>
+</div></section>
+
+<section class="map band" id="map"><div class="wrap">
+  <h2>The compatibility map</h2>
+  <p class="lede">How every type pairs with every other type, whoever you’re into. Scores are highest when one partner gives exactly what the other needs.</p>
+  <div class="scroll"><table id="mtab"></table></div>
+  <div class="key"><span><i style="background:#d6202e"></i>85% and up: natural match</span><span><i style="background:#7a2a3e"></i>70 to 84%: strong potential</span><span><i style="background:#26161e;border:1px solid #3a2430"></i>under 70%: takes work</span></div>
+  <div class="again"><a class="btn or" href="#quiz">Find your best match: start the test</a></div>
+</div></section>
+
+<section class="cta band"><div class="wrap">
+  <h2>Looks are more than just attraction</h2>
+  <p>Find the type that suits you best, and meet them on Dating.com.</p>
+  <a class="btn or" id="cta2" href="https://www.dating.com/?utm_source=animaltype&utm_medium=landing&utm_campaign=animal_type_test">Find your perfect match now</a>
+</div></section>
+
+<footer class="band"><div class="wrap">
+  <span>© 2026 Dating.com. Animal face types are a playful idea from Korean pop culture, made for fun rather than science.</span>
+  <a href="https://www.dating.com/">dating.com</a>
+</div></footer>
+
+<script>
+{
+const $=id=>document.getElementById(id);
+/* ---------- origami mask illustrations: left halves are mirrored, the right side a shade darker ---------- */
+const shade=(h,f)=>{const n=parseInt(h.slice(1),16),c=[n>>16,n>>8&255,n&255].map(v=>Math.max(0,Math.min(255,Math.round(v*f))));return '#'+c.map(v=>v.toString(16).padStart(2,'0')).join('')};
+const P=(pts,fill)=>`<polygon points="${pts.map(p=>p.join(',')).join(' ')}" fill="${fill}"/>`;
+const mir=pts=>pts.map(([x,y])=>[200-x,y]);
+const B=(base,parts,extra)=>{let l='',r='';for(const [pts,c] of parts){const col=c==='b'?base:c==='d'?shade(base,.72):c;l+=P(pts,col);r+=P(mir(pts),c==='b'?shade(base,.8):c==='d'?shade(base,.58):shade(col,c.startsWith('#f')||c.startsWith('#e')?.9:.85))}return r+l+(extra||'')};
+const SL=(d,c,w)=>`<path d="${d}" stroke="${c}" stroke-width="${w||6}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
+const ART={
+fox:B('#f2683a',[[[[38,16],[88,64],[54,94]],'b'],[[[48,34],[76,64],[58,84]],'#2a120c'],[[[26,70],[100,72],[100,128],[60,116]],'b'],[[[26,70],[60,116],[100,128],[100,188]],'#f6e4d4'],[[[56,100],[88,110],[60,112]],'#1a0b07'],[[[90,176],[100,190],[100,174]],'#1a0b07']]),
+wolf:B('#98a4b8',[[[[42,12],[86,64],[42,86]],'b'],[[[50,30],[74,62],[50,76]],'#2a303c'],[[[40,82],[100,58],[100,118],[66,110]],'b'],[[[40,82],[66,110],[74,152],[28,122]],'d'],[[[66,110],[100,118],[100,188],[80,172],[74,152]],'#ebe5dc'],[[[58,94],[90,102],[62,106]],'#f2c14e'],[[[90,170],[100,182],[100,168]],'#16191f']]),
+bear:B('#b3743f',[[[[30,42],[62,26],[76,60],[42,72]],'b'],[[[42,46],[62,38],[66,58]],'#3a2212'],[[[40,66],[100,50],[100,118],[32,122]],'b'],[[[32,122],[100,118],[100,180],[58,172]],'d'],[[[68,120],[100,110],[100,170],[78,160]],'#ebcfaa'],[[[86,118],[100,112],[100,134]],'#24150b'],[[[62,94],[80,90],[80,100]],'#24150b']]),
+owl:B('#c69455',[[[[34,20],[78,58],[48,68]],'b'],[[[40,62],[100,48],[100,192],[46,172],[28,110]],'b'],[[[44,76],[96,70],[96,124],[50,130]],'#f2e4c8'],[[[52,98],[70,80],[88,98],[70,116]],'#f2b630'],[[[62,98],[70,90],[78,98],[70,106]],'#1a120a'],[[[90,114],[100,108],[100,140]],'#e06d2c'],[[[50,150],[70,160],[56,168]],'d']]),
+lion:B('#e0962f',[[[[100,6],[58,18],[20,56],[10,110],[28,162],[68,194],[100,198]],'#9c4416'],[[[100,6],[70,26],[46,60],[54,60],[100,40]],'#c25e1c'],[[[56,62],[100,50],[100,162],[62,150],[46,104]],'#f2be5e'],[[[70,124],[100,116],[100,170],[78,160]],'#fbe3b2'],[[[86,118],[100,112],[100,134]],'#55250f'],[[[62,94],[88,100],[66,104]],'#2a1306']]),
+lioness:B('#d89b56',[[[[42,36],[76,40],[56,68]],'b'],[[[50,56],[100,42],[100,172],[60,152],[38,100]],'b'],[[[38,100],[60,152],[100,172],[100,186],[56,170]],'d'],[[[70,126],[100,118],[100,178],[80,166]],'#f7e1c2'],[[[86,122],[100,116],[100,138]],'#5a3218'],[[[60,96],[90,102],[64,108]],'#2a1708']]),
+deer:B('#cd8a58',[[[[6,72],[62,68],[56,94],[18,96]],'b'],[[[18,76],[56,74],[22,88]],'#f2d2b4'],[[[60,48],[100,38],[100,150],[72,134],[54,90]],'b'],[[[72,134],[100,150],[100,188],[84,182]],'#f4dcc0'],[[[88,176],[100,170],[100,188]],'#1f120a'],[[[64,96],[84,92],[88,106],[70,110]],'#1f120a'],[[[90,56],[96,62],[90,66]],'#f6e2cc']]),
+stag:B('#a96c3c',[[[[10,78],[60,74],[54,98],[20,98]],'b'],[[[60,54],[100,44],[100,152],[72,136],[54,94]],'b'],[[[72,136],[100,152],[100,188],[84,182]],'#e8caa4'],[[[88,176],[100,170],[100,188]],'#1f120a'],[[[64,100],[84,96],[86,108],[68,110]],'#1f120a']],SL('M84 50C74 30 60 16 40 2M64 24L34 28M54 14L58 -10M72 36L62 10','#e9d3ad',6)+SL('M116 50C126 30 140 16 160 2M136 24l30 4M146 14l-4-24M128 36l10-26','#cdb38a',6)),
+cat:B('#857e93',[[[[34,14],[86,58],[32,86]],'b'],[[[44,32],[72,58],[42,74]],'#e79aa8'],[[[32,86],[100,58],[100,150],[50,146],[26,116]],'b'],[[[50,146],[100,150],[100,178],[70,170]],'#b2abc0'],[[[48,106],[90,100],[56,116]],'#b7ef6a'],[[[70,100],[74,100],[72,114]],'#14121a'],[[[92,134],[100,142],[100,134]],'#e79aa8']],SL('M64 150L18 140M66 158L22 166','#e9e4f2',2)+SL('M136 150l46-10M134 158l44 8','#e9e4f2',2)),
+butterfly:B('#ff4d6d',[[[[100,96],[16,22],[4,92],[60,124]],'b'],[[[100,110],[36,130],[48,188],[94,150]],'#b3123f'],[[[22,40],[34,46],[24,56]],'#ffd9c9'],[[[12,80],[24,82],[16,92]],'#ffd9c9'],[[[52,164],[62,170],[52,176]],'#ffd9c9'],[[[94,58],[100,52],[100,172],[94,166]],'#1a0a10']],SL('M98 58C92 38 84 26 72 18M102 58c6-20 14-32 26-40','#1a0a10',3))
+};
+const COL={fox:'#2b120d',wolf:'#141a24',bear:'#24160c',owl:'#211a0e',lion:'#2a1606',lioness:'#2a1a0c',deer:'#2a1510',stag:'#1e140c',cat:'#1b1824',butterfly:'#2a0c18'};
+const pic=(k,bg)=>`<svg viewBox="-24 -30 248 260" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><defs><radialGradient id="g${k}" cx="50%" cy="40%" r="70%"><stop offset="0" stop-color="${shade(bg||COL[k],1.9)}"/><stop offset="1" stop-color="${bg||COL[k]}"/></radialGradient></defs><rect x="-700" y="-700" width="1600" height="1600" fill="url(#g${k})"/>${ART[k]}</svg>`;
+
+/* ---------- types ---------- */
+const LOOK={
+bear:['Round or square, soft full cheeks','Warm and smiling','Broad, friendly nose','Sturdy, broad shoulders'],
+wolf:['Angular, strong jawline','Deep-set and intense, straight brows','Steady, piercing gaze','Lean and athletic'],
+fox:['Heart or V-shaped, pointed chin','Upturned and almond-shaped','Neat sharp nose, playful half-smile','Slim and agile'],
+owl:['Oval','Large and expressive, glasses suit them','Defined brows, thoughtful look','Average and relaxed'],
+lion:['Broad, high cheekbones','Confident and direct','Thick hair like a mane, wide smile','Athletic and powerful'],
+deer:['Long oval, delicate','Big, soft doe eyes','Gentle brows, shy smile','Slender and graceful'],
+stag:['Long and rugged','Bright, with an outdoorsy squint','Strong nose, wavy wild hair','Tall and lean'],
+cat:['Heart-shaped, defined jaw','Upturned cat eyes','Small nose and mouth','Petite and lithe'],
+butterfly:['Bright and open','Sparkling and lively','Light features, wide ready smile','Light and energetic']};
+const SPOT=['Face','Eyes','Signature','Build'];
+const spot=(k,title)=>`<div class="spot"><div class="sh">${title}</div>${LOOK[k].map((v,i)=>`<div><span>${SPOT[i]}</span><b>${v}</b></div>`).join('')}</div>`;
+const T={
+m:{bear:['Bear','Warm & reliable','Strong, loyal and protective. He makes the people he loves feel safe, supported and cared for.',['Loyal','Supportive','Stable','Family-oriented','Generous']],
+wolf:['Wolf','Confident & driven','Independent, ambitious and adventurous. He lives life with intensity and goes after what he wants.',['Bold','Independent','Ambitious','Adventurous','Passionate']],
+fox:['Fox','Charming & playful','Witty, clever and social. He knows how to keep things fun and exciting, and he always surprises you.',['Charming','Witty','Social','Spontaneous','Playful']],
+owl:['Owl','Smart & thoughtful','Intelligent, curious and open-minded. He stimulates your mind and always brings a fresh perspective.',['Intelligent','Thoughtful','Open-minded','Creative','Good listener']],
+lion:['Lion','Leader & confident','Confident, charismatic and ambitious. He takes charge, inspires those around him and always strives for more.',['Confident','Leadership','Ambitious','Charismatic','Determined']],
+deer:['Deer','Kind & gentle','Gentle, empathetic and considerate. He values emotional connection and harmony, and makes you feel truly seen.',['Kind','Empathetic','Caring','Romantic','Sensitive']],
+stag:['Stag','Free-spirited','Wild, independent and full of energy. He loves freedom, nature and new experiences, and keeps life exciting.',['Adventurous','Free-spirited','Confident','Non-conformist','Energetic']]},
+w:{fox:['Fox','Charming & clever','Charming, playful and clever. She knows what she wants and how to get it.',['Witty','Confident','Social','Adaptable']],
+bear:['Bear','Warm & loyal','Warm, loyal and protective. She cares deeply and creates a safe space for others.',['Caring','Reliable','Supportive','Grounded']],
+wolf:['Wolf','Bold & independent','Independent, bold and adventurous. She lives life with intensity and follows her own path.',['Confident','Driven','Free-spirited','Passionate']],
+deer:['Deer','Kind & gentle','Kind, gentle and empathetic. She notices the little things and makes everyone feel seen.',['Sensitive','Compassionate','Thoughtful','Harmonious']],
+owl:['Owl','Curious & insightful','Curious, insightful and open-minded. She seeks deeper meaning and never stops learning.',['Intelligent','Curious','Analytical','Open-minded']],
+lion:['Lioness','Confident & courageous','Confident, ambitious and courageous. She leads, inspires and always strives for more.',['Leadership','Ambitious','Determined','Charismatic']],
+cat:['Cat','Mysterious & magnetic','Independent, mysterious and magnetic. She sets her own rules and values her freedom.',['Independent','Intuitive','Mysterious','Self-sufficient']],
+butterfly:['Butterfly','Optimistic & creative','Optimistic, creative and full of energy. She embraces change and finds beauty in every new chapter.',['Creative','Playful','Adventurous','Free-spirited']]}};
+const artKey=(g,k)=>g==='w'&&k==='lion'?'lioness':k;
+const ALL=['bear','wolf','fox','owl','lion','deer','stag','cat','butterfly'];
+const nm=(g,k)=>g==='a'?(k==='lion'?'Lion':(T.w[k]||T.m[k])[0]):T[g][k][0];
+const icon=k=>`<span class="pz"><img src="img/p_${k}.webp" alt="" loading="lazy"></span>`;
+const ph=(g,k)=>icon(g==='w'&&k==='lion'?'lioness':k);
+const torn=seed=>{let r=seed*9301+49297;const rn=()=>((r=r*16807%2147483647)%1000)/1000;const t=[],b=[];for(let x=0;x<=100;x+=5){t.push(`${x}% ${(rn()*1.4).toFixed(2)}%`);b.unshift(`${x}% ${(98.6+rn()*1.4).toFixed(2)}%`)}return `clip-path:polygon(${t.join(',')},${b.join(',')})`};
+const NOTE={bear:'big hugs',wolf:'dangerous',fox:'sly!',owl:'too smart',lion:'the boss',deer:'sweetheart',stag:'wild one',cat:'mysterious',butterfly:'free spirit'};
+const PAS={wolf:9,lion:8,fox:8,cat:8,stag:7,butterfly:6,bear:5,deer:4,owl:4},SOC={fox:9,butterfly:9,lion:7,bear:7,stag:6,wolf:5,deer:5,owl:4,cat:3};
+const chem=(a,b)=>{const sh=GN[a][0].some(x=>GN[b][0].includes(x));return Math.min(97,40+(PAS[a]+PAS[b])*3+(sh?0:8))};
+const frnd=(a,b)=>{const sh=GN[a][0].filter(x=>GN[b][0].includes(x)).length;return Math.min(96,50+sh*12+(GN[a][1][0]===GN[b][1][0]?10:0)+(10-Math.abs(SOC[a]-SOC[b]))*2)};
+const COMM={bear:'Warm and steady. Says little but means every word, and shows love through actions more than texts.',
+wolf:'Direct and to the point. Skips small talk, values honesty and replies fast when interested.',
+fox:'Witty and flirty. Teases, jokes and keeps every chat light and playful.',
+owl:'Thoughtful and curious. Long messages, big questions and deep late-night conversations.',
+lion:'Confident and generous with compliments. Takes the lead and makes the plans.',
+deer:'Gentle and attentive. Remembers small details and asks how your day really went.',
+stag:'Easygoing and spontaneous. Sends photos from the trail and invites you along.',
+cat:'Selective and mysterious. Takes time to open up, but every reply counts.',
+butterfly:'Bubbly and expressive. Emojis, voice notes and lots of enthusiasm.'};
+const STARTER={bear:'“What’s the dish you’d cook to impress someone?”',wolf:'“What’s the boldest thing you’ve done this year?”',fox:'“Tell me your best travel story, the one you only tell after a glass of wine.”',owl:'“What book or idea changed the way you see the world?”',lion:'“What are you most proud of right now?”',deer:'“What does your perfect slow Sunday look like?”',stag:'“Where’s the most beautiful place you’ve ever woken up?”',cat:'“What do people usually get wrong about you?”',butterfly:'“If you could hop on a plane tomorrow, where would you go?”'};
+const DATE={bear:'a long dinner you cook together',wolf:'a sunrise hike with coffee at the top',fox:'a rooftop bar with a view',owl:'a late museum opening, then a bookshop',lion:'a table at the best restaurant in town',deer:'a quiet picnic in the park',stag:'a road trip somewhere neither of you has been',cat:'a dimly lit jazz bar',butterfly:'a spontaneous day trip'};
+const GROUP={m:'men',w:'women',a:'people'};
+const W2=x=>({safety:'a sense of safety',adventure:'a spirit of adventure'})[x]||WORD[x];
+const strip=(g,b,nb)=>{if(g==='w'||typeof PROF==='undefined')return '';const W=PROF.filter(p=>p[4]);if(!W.length)return '';
+  const own=W.filter(p=>p[3]===b),rest=W.filter(p=>p[3]!==b);const L=[...own,...rest].slice(0,8);
+  const it=L.map(p=>`<a class="mp" href="https://www.dating.com/"><img src="${p[4]}" alt="" loading="lazy"><span><b>${p[0]}, ${p[1]}</b><small><i></i>${p[2]}</small></span></a>`).join('');
+  return `<div class="ms"><div class="msh"><h4>${nb} ${GROUP[g==='a'?'m':g]} online now</h4><span class="mnav"><button type="button" class="mb" data-d="-1" aria-label="Previous profiles">‹</button><button type="button" class="mb" data-d="1" aria-label="Next profiles">›</button></span></div><div class="mtr"><div class="mrow">${it}</div></div></div>`};
+const detail=(ga,a,gb,b,m)=>{
+  const na=nm(ga,a),nb=nm(gb,b),A=GN[a],B=GN[b];
+  const ab=A[0].find(x=>B[1].includes(x)),ba=B[0].find(x=>A[1].includes(x)),sh=A[0].find(x=>B[0].includes(x));
+  let click=ab||ba?`${ab?`The ${na} brings ${W2(ab)}`:`The ${nb} brings ${W2(ba)}`}${ab&&ba?`, the ${nb} brings ${W2(ba)}`:''}. ${sh?`And you share ${W2(sh)}.`:'That is the glue that keeps you together.'}`:sh?`You share ${W2(sh)}, so you understand each other without explaining.`:`Curiosity. You live by different rules, so there is always something new to learn about each other.`;
+  let watch=Math.abs(PAS[a]-PAS[b])>=4?`Different temperatures: the ${PAS[a]>PAS[b]?na:nb} runs hotter than the ${PAS[a]>PAS[b]?nb:na}, so agree on the pace early.`:Math.abs(SOC[a]-SOC[b])>=4?`One of you loves a crowd, the other prefers one-on-one. Balance big nights out with quiet nights in.`:A[1][0]!==B[1][0]?`The ${na} needs ${W2(A[1][0])}, the ${nb} needs ${W2(B[1][0])}. Say it out loud instead of hoping the other guesses.`:`You are so alike that it is easy to get too comfortable. Keep surprising each other.`;
+  const bars=[['Overall',m.sc],['Sexual chemistry',chem(a,b)],['Friendship',frnd(a,b)]];
+  const href=`https://www.dating.com/?utm_source=animaltype&utm_medium=landing&utm_campaign=animal_type_test&utm_content=discover_${b}`;
+  return `<div class="dt"><p>${m.tx}</p><div class="sub">${bars.map(([l,v])=>`<div><span>${l}</span><b class="bar"><i style="width:${v}%"></i></b><em>${v}%</em></div>`).join('')}</div><div class="cw"><div><h4>Where you click</h4><p>${click}</p></div><div><h4>Watch out for</h4><p>${watch}</p></div></div><div class="tips"><div><h4>How ${art(nb)} ${nb} talks</h4><p>${COMM[b]}</p></div><div><h4>Conversation starter</h4><p>${STARTER[b]}</p></div><div><h4>Date idea</h4><p>${DATE[b][0].toUpperCase()+DATE[b].slice(1)}.</p></div></div>${strip(gb,b,nb)}<div class="dd"><a class="btn or" href="${href}">Discover ${nb} ${GROUP[gb]}</a></div></div>`;
+};
+const pool=g=>g==='a'?ALL:Object.keys(T[g]);
+
+/* ---------- compatibility: what each type gives and needs ---------- */
+const GN={bear:[['safety','tenderness'],['tenderness']],wolf:[['adventure','drive'],['freedom','safety']],fox:[['fun','admiration'],['adventure']],owl:[['depth','safety'],['fun']],lion:[['drive','safety'],['admiration']],deer:[['tenderness','admiration'],['safety']],stag:[['adventure','fun'],['freedom']],cat:[['depth','freedom'],['freedom']],butterfly:[['fun','freedom'],['adventure']]};
+const WORD={safety:'sense of safety',tenderness:'tenderness',adventure:'spirit of adventure',drive:'drive',fun:'playfulness',admiration:'warm admiration',depth:'depth',freedom:'respect for freedom'};
+const art=w=>/^[aeiou]/i.test(w)?'an':'a';
+const compat=(ga,a,gb,b)=>{
+  const A=GN[a],B=GN[b],na=nm(ga,a),nb=nm(gb,b);
+  const ab=A[0].find(x=>B[1].includes(x)),ba=B[0].find(x=>A[1].includes(x));
+  const shared=A[0].filter(x=>B[0].includes(x)).length;
+  let sc=58+(ab?16:0)+(ba?16:0)+shared*5+(a===b?4:0);
+  sc=Math.max(52,Math.min(a===b?82:96,sc));
+  let tx='';
+  if(ab&&ba)tx=`A two-way match. The ${na}’s ${WORD[ab]} is exactly what the ${nb} needs, and the ${nb}’s ${WORD[ba]} is what the ${na} craves.`;
+  else if(ab)tx=`The ${na}’s ${WORD[ab]} is exactly what the ${nb} needs. To make it last, the ${na} needs ${WORD[A[1][0]]} in return.`;
+  else if(ba)tx=`The ${nb}’s ${WORD[ba]} is exactly what the ${na} needs. To make it last, the ${nb} needs ${WORD[B[1][0]]} in return.`;
+  else tx=`Different rhythms: the ${na} looks for ${WORD[A[1][0]]}, while the ${nb} looks for ${WORD[B[1][0]]}. It can work with patience and curiosity.`;
+  if(shared)tx+=` On top of that, you both bring ${WORD[A[0].find(x=>B[0].includes(x))]}.`;
+  return {sc,tx};
+};
+
+/* ---------- quiz ---------- */
+const Q=[
+['Your face shape is closest to…',[['Round, with soft cheeks','',{bear:2,butterfly:1,owl:1}],['Square, with a strong jaw','',{wolf:2,lion:1,bear:1}],['Heart or V-shaped','Pointed chin',{fox:2,cat:2}],['Long and oval','',{deer:2,stag:2,owl:1}],['Broad, with high cheekbones','',{lion:2,stag:1,wolf:1}]]],
+['Your eyes are…',[['Large, round and gentle','',{deer:2,owl:1,bear:1}],['Upturned and almond-shaped','',{fox:2,cat:2}],['Deep-set and intense','',{wolf:2,stag:1,lion:1}],['Warm, they crinkle when I laugh','',{bear:2,butterfly:2}],['Big and curious','People say I look thoughtful',{owl:2,deer:1}]]],
+['Your smile is…',[['Wide and radiant','',{lion:2,butterfly:2}],['A playful half-smile','',{fox:2,cat:1}],['Soft and a little shy','',{deer:2,owl:1}],['Rare, but warm when it comes','',{wolf:2,cat:1,bear:1}],['An easy, crooked grin','',{stag:2,bear:1}]]],
+['Your features are…',[['Sharp nose, defined jawline','',{cat:2,fox:1,wolf:1}],['Strong nose, rugged lines','',{stag:2,lion:1,wolf:1}],['Small and delicate','',{deer:2,butterfly:1,owl:1}],['Soft and rounded','',{bear:2,owl:1}],['Bold and striking','',{lion:2,fox:1}]]],
+['Your hair is…',[['Thick and full, like a mane','',{lion:2,stag:1}],['Wavy and a little wild','',{stag:2,butterfly:1,fox:1}],['Neat and classic','',{owl:2,wolf:1}],['Soft and natural','',{deer:2,bear:1}],['Sleek, with a signature style','',{cat:2,fox:1}]]],
+['Your build is…',[['Broad and sturdy','',{bear:2,lion:1}],['Lean and athletic','',{wolf:2,stag:1}],['Slim and graceful','',{deer:2,cat:1}],['Tall and long-limbed','',{stag:2,deer:1}],['Light and energetic','',{butterfly:2,fox:1}],['Average and comfortable','',{owl:2,bear:1}]]],
+['Your perfect Saturday is…',[['Cooking for people I love','',{bear:2}],['A hike or a road trip','',{stag:2,wolf:1}],['A party or a new restaurant','',{fox:2,butterfly:1}],['A museum, books, a long talk','',{owl:2,cat:1}],['Organising something big','',{lion:2}],['A quiet walk in nature','',{deer:2}],['Something spontaneous and new','',{butterfly:2,stag:1}]]],
+['In love, you are…',[['The protector','',{bear:2,lion:1}],['Passionate and all-in','',{wolf:2}],['The one who keeps it fun','',{fox:2,butterfly:1}],['A great listener','',{owl:2,deer:1}],['Romantic and attentive','',{deer:2}],['Loyal, but I need my space','',{cat:2,stag:1,wolf:1}],['The leader','',{lion:2}]]]
+];
+let st={g:null,want:null,step:-1,ans:[]};
+const qz=$('quiz');
+const startView=()=>{
+  qz.innerHTML=`<div class="step">Before we start</div><div class="prog"><i style="width:4%"></i></div>
+  <h2 class="q">Tell us about you</h2>
+  <div class="lbl">I am</div><div class="pick" id="pg"><button type="button" data-v="w" aria-pressed="${st.g==='w'}">A woman</button><button type="button" data-v="m" aria-pressed="${st.g==='m'}">A man</button></div>
+  <div class="lbl">I’d like to meet</div><div class="pick" id="pw"><button type="button" data-v="m" aria-pressed="${st.want==='m'}">Men</button><button type="button" data-v="w" aria-pressed="${st.want==='w'}">Women</button><button type="button" data-v="a" aria-pressed="${st.want==='a'}" style="grid-column:1/-1">Everyone</button></div>
+  <div class="qnav"><span class="lbl">8 questions · about 1 minute</span><button class="btn or" id="go" type="button" ${st.g&&st.want?'':'disabled style="opacity:.5;cursor:not-allowed"'}>Start the test</button></div>`;
+  $('pg').onclick=e=>{const b=e.target.closest('button');if(!b)return;st.g=b.dataset.v;startView()};
+  $('pw').onclick=e=>{const b=e.target.closest('button');if(!b)return;st.want=b.dataset.v;startView()};
+  $('go').onclick=()=>{if(st.g&&st.want){st.step=0;st.ans=[];qView()}};
+};
+const keep=()=>{if(qz.getBoundingClientRect().top<0)qz.scrollIntoView({block:'start'})};
+const qView=()=>{
+  const [q,os]=Q[st.step];
+  qz.innerHTML=`<div class="step">Question ${st.step+1} of ${Q.length}</div><div class="prog"><i style="width:${(st.step+1)/Q.length*100}%"></i></div>
+  <h2 class="q">${q}</h2><div class="opts">${os.map((o,i)=>`<button class="opt" type="button" data-i="${i}">${o[0]}${o[1]?`<small>${o[1]}</small>`:''}</button>`).join('')}</div>
+  <div class="qnav"><button class="back" type="button" id="bk">← Back</button></div>`;keep();
+  qz.querySelector('.opts').onclick=e=>{const b=e.target.closest('.opt');if(!b)return;st.ans[st.step]=+b.dataset.i;if(st.step<Q.length-1){st.step++;qView()}else done()};
+  $('bk').onclick=()=>{if(st.step>0){st.step--;qView()}else{st.step=-1;startView()}};
+};
+const score=()=>{const keys=Object.keys(T[st.g]),s=Object.fromEntries(keys.map(k=>[k,1]));
+  st.ans.forEach((a,i)=>{const w=Q[i][1][a][2];for(const k in w)if(k in s)s[k]+=w[k]});
+  const tot=keys.reduce((t,k)=>t+s[k],0);
+  return keys.map(k=>[k,s[k]/tot]).sort((a,b)=>b[1]-a[1]);};
+const done=()=>{
+  const r=score(),top=r.slice(0,3),sum=top.reduce((t,x)=>t+x[1],0);
+  const pc=top.map(x=>Math.round(x[1]/sum*100));pc[0]+=100-pc.reduce((a,b)=>a+b,0);if(pc[0]<=pc[1]){const d=pc[1]-pc[0]+2;pc[0]+=d;pc[2]-=d;if(pc[2]<1){pc[1]-=1-pc[2];pc[2]=1}}
+  const k=top[0][0],t=T[st.g][k];
+  qz.innerHTML=`<div class="step">Your result</div><div class="prog"><i style="width:100%"></i></div>
+  <div class="mini"><div class="art">${ph(st.g,k)}</div><div><div class="youare">You are</div><h2 class="q" style="margin:0">The ${t[0]}</h2><div class="tag">${t[1]}</div></div></div>
+  <div class="mixh">Your animal mix</div><div class="mix">${top.map((x,i)=>`<div class="${i?'':'main'}"><span>${T[st.g][x[0]][0]}<small>${i?'also in you':'main type'}</small></span><b><i style="width:${pc[i]}%"></i></b><span>${pc[i]}%</span></div>`).join('')}</div><p class="mixp">You’re most likely ${art(T[st.g][top[0][0]][0])} ${T[st.g][top[0][0]][0]}, with a touch of ${T[st.g][top[1][0]][0]} and ${T[st.g][top[2][0]][0]}. Most people are a mix of several types.</p>
+  <div class="qnav"><button class="back" type="button" id="again">↺ Retake the test</button><a class="btn or" href="#result">See my matches</a></div>`;
+  document.body.classList.add('done');
+  $('again').onclick=()=>{document.body.classList.remove('done');st.step=-1;st.ans=[];startView()};
+  showResult(k);
+  setTab(st.want==='a'?(st.g==='w'?'m':'w'):st.want);
+  drawMap(k);
+};
+const showResult=k=>{
+  const t=T[st.g][k],ak=artKey(st.g,k),lk=LOOK[k];
+  $('result').classList.remove('hide');
+  $('rcard').setAttribute('style',torn(5));$('rcard').innerHTML=`<span class="tape"></span><div class="art" style="aspect-ratio:1/1">${ph(st.g,k)}<span class="mk">that’s you!</span></div><div class="body" style="background:${COL[ak]}"><div class="tag">${t[1]}</div><h2>The ${t[0]}</h2><div class="chips">${t[3].map(c=>`<span>${c}</span>`).join('')}</div></div>`;
+  const rk=pool(st.want).filter(b=>b!==k||st.want!==st.g).map(b=>({b,...compat(st.g,k,st.want,b)})).sort((x,y)=>y.sc-x.sc);
+  const yes=rk.slice(0,2),no=rk[rk.length-1],grp=GROUP[st.want];
+  const nb=nm(st.want,no.b),NB=GN[no.b];
+  const whyNo=NB[1][0]===GN[k][1][0]?`You both need ${W2(NB[1][0])}, and neither of you is built to give it. You’ll end up waiting for the other to make the first move.`:`The ${nb} craves ${W2(NB[1][0])}, which is not what you naturally give, and the ${nb}’s ${WORD[NB[0][0]]} is not what you are looking for. It can work, but expect to put in extra effort.`;
+  $('rfeat').innerHTML=`<div><h3>Your vibe</h3><p>${t[2]}</p></div><div><h3>How you communicate</h3><p>${COMM[k]}</p></div><div><h3>In love</h3><p>You give ${GN[k][0].map(x=>W2(x)).join(' and ')}, and you need a partner who offers ${W2(GN[k][1][0])}.</p></div><div class="yn"><div class="y"><h4>Who completes you perfectly</h4><div class="who">${yes.map(m=>`<span><span class="ic">${ph(st.want,m.b)}</span>${nm(st.want,m.b)}</span>`).join('')}</div><p>${yes.map(m=>`The ${nm(st.want,m.b)} brings ${GN[m.b][0].map(x=>W2(x)).join(' and ')}`).join('; ').replace('; The','; the')}. That’s the balance that makes you shine.</p></div><div class="n"><h4>Where it gets tricky</h4><div class="who"><span><span class="ic">${ph(st.want,no.b)}</span>${nb}</span></div><p>${whyNo}</p></div></div>`;
+  const ms=pool(st.want).map(b=>({b,...compat(st.g,k,st.want,b)})).sort((x,y)=>y.sc-x.sc);
+  $('mh').textContent=`Who you should be chasing`;
+  const best=ms[0],used=[best.b];
+  const pick=f=>{const c=pool(st.want).filter(b=>!used.includes(b)).map(b=>({b,sc:f(k,b)})).sort((x,y)=>y.sc-x.sc)[0];used.push(c.b);return c};
+  const hot=pick(chem),fr=pick(frnd);
+  const TOP=[[best,'Best match','overall'],[hot,'Sexual chemistry','attraction'],[fr,'Strong friendship','friendship']];
+  $('mtop').innerHTML=TOP.map(([m,lab,u])=>{const bk=artKey(st.want,m.b);return `<div class="mcard" style="background:${COL[bk]}"><div class="art">${ph(st.want,m.b)}</div><div><em>${lab}</em><b>${nm(st.want,m.b)}</b><span class="sc">${m.sc}%</span></div></div>`}).join('');
+  $('mlist').innerHTML=ms.map(m=>{const bk=artKey(st.want,m.b);return `<details><summary><span class="ic">${ph(st.want,m.b)}</span><span class="nm">${nm(st.want,m.b)}</span><span class="bar"><i style="width:${m.sc}%"></i></span><span class="pc">${m.sc}%</span></summary>${detail(st.g,k,st.want,m.b,m)}</details>`}).join('');
+  const u='https://www.dating.com/?utm_source=animaltype&utm_medium=landing&utm_campaign=animal_type_test&utm_content='+st.g+'_'+k;
+  $('navcta').href=u;$('cta2').href=u;
+};
+
+/* ---------- deck ---------- */
+const setTab=g=>{
+  $('tm').setAttribute('aria-pressed',g==='m');$('tw').setAttribute('aria-pressed',g==='w');
+  $('cards').innerHTML=Object.entries(T[g]).map(([k,t])=>{const ak=artKey(g,k);return `<article class="card" style="${torn(k.length*7+(g==='m'?3:11))}"><span class="tape${k.length%2?' r':''}"></span><div class="art" style="aspect-ratio:1/1">${ph(g,k)}<span class="mk">${NOTE[k]}</span></div><div class="body"><div class="tag">${t[1]}</div><h3>The ${t[0]}</h3><p>${t[2]}</p><p class="talk"><b>Communication:</b> ${COMM[k]}</p>${spot(k,'How to spot one')}</div></article>`}).join('');
+};
+$('tm').onclick=()=>setTab('m');$('tw').onclick=()=>setTab('w');
+
+/* ---------- map ---------- */
+const heat=v=>v>=85?['#d6202e','#fff']:v>=70?['#7a2a3e','#f7ede8']:['#26161e','#bba7ae'];
+const drawMap=me=>{
+  let h='<tr><th></th>'+ALL.map(w=>`<th scope="col"><div class="ic">${ph('a',w)}</div>${nm('a',w)}</th>`).join('')+'</tr>';
+  h+=ALL.map(m=>'<tr>'+`<th scope="row" class="rh"><div><span class="ic">${ph('a',m)}</span>${nm('a',m)}</div></th>`+ALL.map(w=>{const v=compat('a',m,'a',w).sc,c=heat(v);return `<td class="${me&&(me===m||me===w)?'me':''}" style="background:${c[0]};color:${c[1]}" title="${nm('a',m)} + ${nm('a',w)}">${v}</td>`}).join('')+'</tr>').join('');
+  $('mtab').innerHTML=h;
+};
+
+$('herds').innerHTML=[['w','fox',0,-5],['m','wolf',19.5,4],['w','lion',39,-3],['m','stag',58.5,6],['w','cat',78,-6]].map(([g,k,x,rot],i)=>`<div class="cut paper" style="left:${x}%;top:${i%2?18:0}px;transform:rotate(${rot}deg);z-index:${i+1}"><span class="tape${i%2?' r':''}" style="width:56px;top:-8px"></span>${ph(g,k)}<span class="hand">${NOTE[k]}</span></div>`).join('')+`<svg class="doodle" style="left:-2%;top:-26px;width:60px;height:60px;z-index:9" viewBox="0 0 60 60"><path d="M30 50C10 36 4 24 12 14c6-8 16-6 18 4 2-10 12-12 18-4 8 10 2 22-18 36z" fill="none" stroke="#d6202e" stroke-width="3.5" stroke-linecap="round"/></svg><svg class="doodle" style="right:-4%;bottom:-6px;width:90px;height:50px;z-index:9" viewBox="0 0 90 50"><path d="M4 40C24 46 54 40 70 14M70 14l-12 2M70 14l2 12" fill="none" stroke="#f4ede2" stroke-width="3" stroke-linecap="round"/></svg>`;
+
+const PROF=[['Oliver',49,'Dublin','stag','img/u_1.jpg'],['Marco',47,'Milan','lion','img/u_2.jpg'],['Lucas',44,'Madrid','fox','img/u_3.jpg'],['Daniel',38,'Oslo','deer','img/u_4.jpg'],['James',52,'Stockholm','wolf','img/u_5.jpg'],['Alex',46,'Paris','fox','img/u_6.jpg'],['David',48,'Toronto','bear','img/u_7.jpg'],['Michael',51,'Chicago','wolf','img/u_8.jpg'],['Erik',50,'Copenhagen','deer','img/u_9.jpg'],['Thomas',45,'Edinburgh','bear','img/u_10.jpg'],['Ryan',41,'Denver','fox','img/u_11.jpg'],['Jack',57,'Austin','stag','img/u_12.jpg'],['Ethan',43,'Barcelona','owl','img/u_13.jpg'],['Henry',53,'Amsterdam','owl','img/u_14.jpg']];
+const AVC=['#c98f6a','#a77a64','#8e6a5a','#b88d74','#9d7b6b'];
+const av=i=>`<svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="84" r="38" fill="${AVC[i%5]}"/><path d="M28 200c4-46 34-72 72-72s68 26 72 72z" fill="${AVC[i%5]}"/><path d="M62 80c0-30 18-46 40-46 24 0 38 16 38 40-8-10-22-16-40-14-16 2-28 8-38 20z" fill="#2a1a1e" opacity="${i%3?'.85':'.55'}"/></svg>`;
+const card=(p,i)=>`<a class="pf" href="https://www.dating.com/" tabindex="${i<PROF.length?0:-1}"><div class="av">${p[4]?`<img src="${p[4]}" alt="" loading="lazy">`:av(i)}<span class="on"><i></i>Online</span><span class="badge">${icon(p[3])}</span></div><div class="bd"><div class="nm2">${p[0]}, ${p[1]}</div><div class="mt2">${p[2]}</div><span class="ty">The ${T.m[p[3]][0]}</span></div></a>`;
+$('row').innerHTML=[...PROF,...PROF].map(card).join('');
+document.addEventListener('click',e=>{const bt=e.target.closest('.mb');if(!bt)return;const tr=bt.closest('.ms').querySelector('.mtr');tr.scrollBy({left:(+bt.dataset.d)*tr.clientWidth*.8})});
+startView();setTab('w');drawMap(null);
+}
+</script>
+</body>
+</html>
